@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LTL18:33bg - BEATSSUDA{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="{{ url_for('index') }}" class="logo">
+                    <span class="logo-text">LTL18:33bg</span>
+                    <span class="logo-sub">BEATSSUDA</span>
+                </a>
+                <nav class="nav">
+                    <a href="{{ url_for('index') }}" class="nav-link">Все</a>
+                    <a href="/listings/sell" class="nav-link">Продам</a>
+                    <a href="/listings/service" class="nav-link">Услуги</a>
+                    <a href="{{ url_for('search') }}" class="nav-link">🔍 Поиск</a>
+                    <a href="{{ url_for('create_listing') }}" class="nav-link create-btn">+ Создать</a>
+                    <div id="auth-section" class="auth-section">
+                        <button id="login-btn" class="login-btn" onclick="telegramLogin()">
+                            📱 Войти через Telegram
+                        </button>
+                        <div id="user-menu" class="user-menu" style="display: none;">
+                            <span id="user-name" class="user-name"></span>
+                            <button onclick="logout()" class="logout-btn">Выйти</button>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="{{ url_for('stats') }}" class="footer-link">📊 Статистика</a>
+                    <a href="{{ url_for('search') }}" class="footer-link">🔍 Поиск</a>
+                    <a href="{{ url_for('create_listing') }}" class="footer-link">+ Создать</a>
+                </div>
+                <p class="disclaimer">
+                    ⚠️ Администрация LTL18:33bg не несёт ответственности за сделки между пользователями.<br>
+                    Рекомендуем использовать безопасные способы расчёта или предоплату через эскроу.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

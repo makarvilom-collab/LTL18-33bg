@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Создать объявление - LTL18:33bg{% endblock %}
+
+{% block content %}
+<div class="create-form-wrapper">
+    <h1 class="form-title">Создать объявление</h1>
+    <p class="form-subtitle">Заполните все поля для создания красивого объявления в стиле BEATSSUDA</p>
+    
+    <form class="create-form" method="POST" action="{{ url_for('create_listing') }}">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.listing_type.label(class="form-label") }}
+            {{ form.listing_type(class="form-select") }}
+            {% if form.listing_type.errors %}
+                <div class="form-errors">
+                    {% for error in form.listing_type.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.author.label(class="form-label") }}
+                {{ form.author(class="form-input", placeholder="@твойник") }}
+                {% if form.author.errors %}
+                    <div class="form-errors">
+                        {% for error in form.author.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.contact.label(class="form-label") }}
+                {{ form.contact(class="form-input", placeholder="@ник для связи") }}
+                {% if form.contact.errors %}
+                    <div class="form-errors">
+                        {% for error in form.contact.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.item_type.label(class="form-label") }}
+                {{ form.item_type(class="form-select") }}
+                {% if form.item_type.errors %}
+                    <div class="form-errors">
+                        {% for error in form.item_type.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.genre.label(class="form-label") }}
+                {{ form.genre(class="form-select") }}
+                {% if form.genre.errors %}
+                    <div class="form-errors">
+                        {% for error in form.genre.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            {{ form.preview_url.label(class="form-label required") }}
+            {{ form.preview_url(class="form-input", placeholder="https://soundcloud.com/... или https://drive.google.com/...") }}
+            <small class="form-help">Обязательно! SoundCloud, Google Drive, Telegram file или другая ссылка</small>
+            {% if form.preview_url.errors %}
+                <div class="form-errors">
+                    {% for error in form.preview_url.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.price.label(class="form-label") }}
+                {{ form.price(class="form-input", placeholder="50 USD / 2000 грн / 4500 ₽ / barter") }}
+                {% if form.price.errors %}
+                    <div class="form-errors">
+                        {% for error in form.price.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.license.label(class="form-label") }}
+                {{ form.license(class="form-select") }}
+                {% if form.license.errors %}
+                    <div class="form-errors">
+                        {% for error in form.license.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.includes.label(class="form-label") }}
+                {{ form.includes(class="form-input", placeholder="wav, stems, project, mp3") }}
+                {% if form.includes.errors %}
+                    <div class="form-errors">
+                        {% for error in form.includes.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.delivery_time.label(class="form-label") }}
+                {{ form.delivery_time(class="form-input", placeholder="24 часа / сразу / 2-3 дня") }}
+                {% if form.delivery_time.errors %}
+                    <div class="form-errors">
+                        {% for error in form.delivery_time.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-textarea", placeholder="Краткое описание до 200 символов", maxlength="200") }}
+            <small class="form-help">Максимум 200 символов</small>
+            {% if form.description.errors %}
+                <div class="form-errors">
+                    {% for error in form.description.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.tags.label(class="form-label") }}
+            {{ form.tags(class="form-input", placeholder="#бит #продам #trap #drill") }}
+            <small class="form-help">Теги через пробел, каждый тег должен начинаться с #</small>
+            {% if form.tags.errors %}
+                <div class="form-errors">
+                    {% for error in form.tags.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">🔥 Создать объявление</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+    
+    <div class="form-example">
+        <h3>📋 Пример заполнения:</h3>
+        <div class="example-text">
+            <p><strong>Тип:</strong> sell</p>
+            <p><strong>Ник:</strong> @BeatHavenX</p>
+            <p><strong>Тип товара:</strong> бит</p>
+            <p><strong>Жанр:</strong> trap</p>
+            <p><strong>Превью:</strong> https://soundcloud.com/user/track</p>
+            <p><strong>Цена:</strong> 50 USD</p>
+            <p><strong>Лицензия:</strong> non-exclusive</p>
+            <p><strong>Что включено:</strong> wav, stems</p>
+            <p><strong>Срок:</strong> доставка сразу</p>
+            <p><strong>Контакт:</strong> @BeatHavenX</p>
+            <p><strong>Описание:</strong> 808 heavy, атмосферный drill-вайб</p>
+            <p><strong>Теги:</strong> #бит #продам #trap</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

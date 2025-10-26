@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}Объявление #{{ listing.id }} - LTL18:33bg{% endblock %}
+
+{% block content %}
+<div class="listing-detail">
+    <div class="listing-header">
+        <div class="listing-meta-info">
+            <span class="listing-type {{ listing.listing_type }}">
+                {% if listing.listing_type == 'sell' %}🔥 ПРОДАМ{% elif listing.listing_type == 'buy' %}💎 КУПЛЮ{% else %}🛠 УСЛУГА{% endif %}
+            </span>
+            <span class="listing-id">#{{ listing.id }}</span>
+            <span class="listing-date">{{ listing.created_at.strftime('%d.%m.%Y в %H:%M') }}</span>
+        </div>
+        
+        <div class="listing-stats">
+            <span class="stat">👁 {{ listing.views }} просмотров</span>
+            <span class="stat">📩 {{ listing.contacts_clicked }} обращений</span>
+        </div>
+    </div>
+    
+    <h1 class="listing-title">{{ listing.item_type }} - {{ listing.genre }}</h1>
+    
+    <div class="listing-content">
+        <div class="listing-main">
+            <div class="listing-details-full">
+                <div class="detail-section">
+                    <h3>📋 Основная информация</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">🧑 Автор:</span>
+                            <span class="value">{{ listing.author }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="label">🎵 Жанр:</span>
+                            <span class="value">{{ listing.genre }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="label">💸 Цена:</span>
+                            <span class="value price">{{ listing.price }}</span>
+                        </div>
+                        
+                        {% if listing.license %}
+                        <div class="detail-item">
+                            <span class="label">📌 Лицензия:</span>
+                            <span class="value">{{ listing.license }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if listing.includes %}
+                        <div class="detail-item">
+                            <span class="label">📦 Что включено:</span>
+                            <span class="value">{{ listing.includes }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if listing.delivery_time %}
+                        <div class="detail-item">
+                            <span class="label">⏱ Срок доставки:</span>
+                            <span class="value">{{ listing.delivery_time }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if listing.preview_url %}
+                <div class="detail-section">
+                    <h3>🔗 Превью</h3>
+                    <div class="preview-section">
+                        <a href="{{ listing.preview_url }}" target="_blank" class="preview-link-large">
+                            🎵 Слушать превью
+                        </a>
+                        <small class="preview-warning">
+                            {% if listing.is_preview_safe %}
+                                ✅ Проверенная ссылка
+                            {% else %}
+                                ⚠️ Внешняя ссылка - будьте осторожны
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if listing.description %}
+                <div class="detail-section">
+                    <h3>✍️ Описание</h3>
+                    <div class="description-text">
+                        {{ listing.description }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if listing.formatted_tags %}
+                <div class="detail-section">
+                    <h3>🏷 Теги</h3>
+                    <div class="tags-list">
+                        {% for tag in listing.formatted_tags %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="listing-sidebar">
+            <div class="contact-card">
+                <h3>📩 Связаться с автором</h3>
+                <a href="{{ listing.contact }}" 
+                   target="_blank" 
+                   class="contact-btn-large"
+                   onclick="trackContact({{ listing.id }})">
+                    {{ listing.contact }}
+                </a>
+                <small class="contact-note">
+                    При обращении укажите номер объявления #{{ listing.id }}
+                </small>
+            </div>
+            
+            <div class="safety-card">
+                <h4>🛡 Безопасность</h4>
+                <ul class="safety-tips">
+                    <li>Проверяйте превью перед покупкой</li>
+                    <li>Используйте безопасные способы оплаты</li>
+                    <li>Не делитесь личными данными</li>
+                    <li>При сомнениях обратитесь к модераторам</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="listing-actions">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">← Назад к объявлениям</a>
+        <a href="{{ url_for('create_listing') }}" class="btn btn-primary">+ Создать своё объявление</a>
+    </div>
+</div>
+
+<style>
+.listing-detail {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.listing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--surface-color);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.listing-meta-info {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.listing-date {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.listing-stats {
+    display: flex;
+    gap: 16px;
+}
+
+.stat {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.listing-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.listing-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+.listing-main {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 24px;
+}
+
+.detail-section {
+    margin-bottom: 32px;
+}
+
+.detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.detail-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: var(--surface-color);
+    border-radius: 8px;
+}
+
+.detail-item .label {
+    font-size: 14px;
+    min-width: 120px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.detail-item .value {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.detail-item .value.price {
+    color: var(--accent-color);
+    font-size: 16px;
+}
+
+.preview-section {
+    text-align: center;
+}
+
+.preview-link-large {
+    display: inline-block;
+    background: var(--accent-color);
+    color: white;
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.preview-link-large:hover {
+    background: #e55a2b;
+}
+
+.preview-warning {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.description-text {
+    background: var(--surface-color);
+    padding: 16px;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.listing-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-card,
+.safety-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+}
+
+.contact-card h3,
+.safety-card h4 {
+    margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.contact-btn-large {
+    display: block;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.contact-btn-large:hover {
+    background: var(--secondary-color);
+}
+
+.contact-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.safety-tips {
+    margin: 0;
+    padding-left: 16px;
+}
+
+.safety-tips li {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.listing-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--surface-color);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+@media (max-width: 768px) {
+    .listing-header {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+    
+    .listing-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .listing-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+function trackContact(listingId) {
+    fetch(`/track-contact/${listingId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Contact tracked:', data);
+        })
+        .catch(error => {
+            console.error('Error tracking contact:', error);
+        });
+}
+</script>
+{% endblock %}
