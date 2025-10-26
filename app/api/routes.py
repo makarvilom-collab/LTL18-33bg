@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
 from app.models.listing import Listing, db
 from app.moderation import content_moderator
+from app.telegram_auth import validate_telegram_user_header
 from datetime import datetime
 import re
 
@@ -67,6 +68,22 @@ def get_listings():
 def create_listing():
     """Создать новое объявление"""
     try:
+        # Проверяем авторизацию через Telegram
+        user_header = request.headers.get('X-Telegram-User')
+        if not user_header:
+            return jsonify({
+                'success': False,
+                'error': 'Требуется авторизация через Telegram'
+            }), 401
+        
+        # Валидируем Telegram данные
+        is_valid, user_data = validate_telegram_user_header(user_header)
+        if not is_valid:
+            return jsonify({
+                'success': False,
+                'error': f'Ошибка авторизации: {user_data}'
+            }), 401
+        
         data = request.get_json()
         
         if not data:

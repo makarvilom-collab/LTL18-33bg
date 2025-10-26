@@ -276,7 +276,7 @@ function showTelegramInstruction() {
                 </div>
                 <div class="instruction-step">
                     <div class="step-number">2</div>
-                    <div class="step-text">Или добавьте наш бот: <strong>@BEATSSUDA_bot</strong></div>
+                    <div class="step-text">Или добавьте наш бот: <strong>@ltl1833bg_bot</strong></div>
                 </div>
                 <div class="instruction-step">
                     <div class="step-number">3</div>
@@ -284,7 +284,7 @@ function showTelegramInstruction() {
                 </div>
             </div>
             <div class="instruction-buttons">
-                <a href="https://t.me/BEATSSUDA_bot" target="_blank" class="telegram-bot-btn">
+                <a href="https://t.me/ltl1833bg_bot" target="_blank" class="telegram-bot-btn">
                     📱 Открыть Telegram бота
                 </a>
                 <button onclick="closeAuthModal()" class="close-modal-btn">Закрыть</button>
@@ -468,7 +468,7 @@ function showAuthRequiredMessage() {
                 </div>
             </div>
             <div class="auth-required-actions">
-                <a href="https://t.me/BEATSSUDA_bot" target="_blank" class="telegram-bot-btn">
+                <a href="https://t.me/ltl1833bg_bot" target="_blank" class="telegram-bot-btn">
                     📱 Открыть Telegram бота
                 </a>
                 <a href="/" class="btn btn-secondary">← На главную</a>

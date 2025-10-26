@@ -3,6 +3,7 @@ from app.models.listing import db, init_db, Listing
 from app.forms import ListingForm, SearchForm
 from app.moderation import content_moderator
 from app.api.routes import api_bp
+from app.telegram_auth import validate_telegram_user_header
 import os
 from datetime import datetime
 
@@ -81,11 +82,15 @@ def create_listing():
     
     # Проверяем авторизацию для POST запросов
     if request.method == 'POST':
-        # В реальном приложении здесь была бы проверка сессии или JWT токена
-        # Пока проверяем наличие заголовка или параметра с данными пользователя
-        user_data = request.headers.get('X-Telegram-User')
-        if not user_data:
+        user_header = request.headers.get('X-Telegram-User')
+        if not user_header:
             flash('❌ Для создания объявлений необходимо войти через Telegram', 'error')
+            return redirect(url_for('index'))
+        
+        # Валидируем Telegram данные
+        is_valid, user_data = validate_telegram_user_header(user_header)
+        if not is_valid:
+            flash(f'❌ Ошибка авторизации: {user_data}', 'error')
             return redirect(url_for('index'))
     
     if form.validate_on_submit():
