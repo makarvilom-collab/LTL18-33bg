@@ -285,6 +285,128 @@ def inject_globals():
         'site_name': 'LTL18:33bg - BEATSSUDA'
     }
 
+@app.route('/webhook/<token>', methods=['POST'])
+def webhook(token):
+    """Обработчик вебхука от Telegram"""
+    import requests
+    
+    BOT_TOKEN = "8405053839:AAENp9xuJw2HVwF1FWs8Dipwkrur1dqK2Uw"
+    
+    if token != BOT_TOKEN:
+        return "Unauthorized", 403
+    
+    try:
+        update = request.get_json()
+        
+        # Проверяем есть ли сообщение
+        if 'message' in update:
+            message = update['message']
+            chat_id = message['chat']['id']
+            text = message.get('text', '')
+            
+            # Обрабатываем команды
+            if text == '/start':
+                send_telegram_start_message(chat_id)
+            elif text == '/app':
+                send_telegram_app_message(chat_id)
+            elif text == '/help':
+                send_telegram_help_message(chat_id)
+        
+        return "OK", 200
+        
+    except Exception as e:
+        app.logger.error(f"Webhook error: {e}")
+        return "Error", 500
+
+def send_telegram_start_message(chat_id):
+    """Отправляет приветственное сообщение"""
+    import requests
+    
+    BOT_TOKEN = "8405053839:AAENp9xuJw2HVwF1FWs8Dipwkrur1dqK2Uw"
+    message = """🎵 *Добро пожаловать в LTL18:33BG \- BEATSSUDA Platform*
+
+Приветствуем\\! Мы \- комьюнити битмейкеров и продюсеров\\.
+Помогаем друг другу, делаем звук,
+продаём / покупаем / делимся китами и пресетами\\.
+
+🔥 *Здесь вы можете:*
+• Покупать и продавать биты
+• Заказывать мастеринг и сведение  
+• Делиться опытом с комьюнити
+• Находить нужные киты и пресеты
+
+*Техподдержка:* @BeatHavenX
+
+Нажмите кнопку ниже чтобы открыть платформу:"""
+    
+    keyboard = {
+        "inline_keyboard": [[
+            {
+                "text": "🚀 Открыть BEATSSUDA Platform",
+                "web_app": {"url": "https://ltl-18-33bg.vercel.app"}
+            }
+        ]]
+    }
+    
+    send_telegram_message_helper(chat_id, message, keyboard)
+
+def send_telegram_app_message(chat_id):
+    """Отправляет сообщение с кнопкой приложения"""
+    message = "🚀 *Откройте BEATSSUDA Platform*"
+    
+    keyboard = {
+        "inline_keyboard": [[
+            {
+                "text": "📱 Открыть платформу",
+                "web_app": {"url": "https://ltl-18-33bg.vercel.app"}
+            }
+        ]]
+    }
+    
+    send_telegram_message_helper(chat_id, message, keyboard)
+
+def send_telegram_help_message(chat_id):
+    """Отправляет справочное сообщение"""
+    message = """❓ *Помощь по BEATSSUDA Platform*
+
+*Команды:*
+/start \- Главное меню
+/app \- Открыть платформу
+/help \- Эта справка
+
+*Как пользоваться:*
+1\\. Нажмите кнопку меню или используйте /app
+2\\. Откроется платформа в Telegram
+3\\. Покупайте, продавайте, общайтесь\\!
+
+*Техподдержка и модерация:* @BeatHavenX
+*Все проблемы писать ему\\!*"""
+    
+    send_telegram_message_helper(chat_id, message)
+
+def send_telegram_message_helper(chat_id, text, reply_markup=None):
+    """Отправляет сообщение через Telegram Bot API"""
+    import requests
+    
+    BOT_TOKEN = "8405053839:AAENp9xuJw2HVwF1FWs8Dipwkrur1dqK2Uw"
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    
+    data = {
+        "chat_id": chat_id,
+        "text": text,
+        "parse_mode": "MarkdownV2"
+    }
+    
+    if reply_markup:
+        data["reply_markup"] = reply_markup
+    
+    try:
+        response = requests.post(url, json=data)
+        return response.status_code == 200
+    except Exception as e:
+        print(f"Error sending message: {e}")
+        return False
+
 # Создаем экземпляр приложения для хостинга
 app = create_app()
 
