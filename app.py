@@ -285,6 +285,9 @@ def inject_globals():
         'site_name': 'LTL18:33bg - BEATSSUDA'
     }
 
+# Создаем экземпляр приложения для хостинга
+app = create_app()
+
 if __name__ == '__main__':
     # Создаем таблицы базы данных
     with app.app_context():
