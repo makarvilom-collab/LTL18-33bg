@@ -1,3 +1,0 @@
-# Railway deployment configuration
-FLASK_ENV=production
-PORT=5000
