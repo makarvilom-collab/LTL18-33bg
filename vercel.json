@@ -2,14 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "simple.py",
+      "src": "index.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "simple.py"
+      "dest": "index.py"
     }
-  ]
+  ],
+  "env": {
+    "PYTHONPATH": ".",
+    "FLASK_ENV": "production"
+  }
 }
