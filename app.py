@@ -285,11 +285,10 @@ def inject_globals():
         'site_name': 'LTL18:33bg - BEATSSUDA'
     }
 
-@app.route('/webhook/<token>', methods=['POST'])
+# Вебхук для Telegram бота
+@app.route('/webhook/<token>', methods=['POST'])  
 def webhook(token):
     """Обработчик вебхука от Telegram"""
-    import requests
-    
     BOT_TOKEN = "8405053839:AAENp9xuJw2HVwF1FWs8Dipwkrur1dqK2Uw"
     
     if token != BOT_TOKEN:
@@ -298,19 +297,17 @@ def webhook(token):
     try:
         update = request.get_json()
         
-        # Проверяем есть ли сообщение
         if 'message' in update:
             message = update['message']
             chat_id = message['chat']['id']
             text = message.get('text', '')
             
-            # Обрабатываем команды
             if text == '/start':
-                send_telegram_start_message(chat_id)
+                send_start_message(chat_id)
             elif text == '/app':
-                send_telegram_app_message(chat_id)
+                send_app_message(chat_id)
             elif text == '/help':
-                send_telegram_help_message(chat_id)
+                send_help_message(chat_id)
         
         return "OK", 200
         
@@ -318,7 +315,7 @@ def webhook(token):
         app.logger.error(f"Webhook error: {e}")
         return "Error", 500
 
-def send_telegram_start_message(chat_id):
+def send_start_message(chat_id):
     """Отправляет приветственное сообщение"""
     import requests
     
@@ -348,30 +345,30 @@ def send_telegram_start_message(chat_id):
         ]]
     }
     
-    send_telegram_message_helper(chat_id, message, keyboard)
+    send_telegram_message(chat_id, message, keyboard)
 
-def send_telegram_app_message(chat_id):
+def send_app_message(chat_id):
     """Отправляет сообщение с кнопкой приложения"""
     message = "🚀 *Откройте BEATSSUDA Platform*"
     
     keyboard = {
         "inline_keyboard": [[
             {
-                "text": "📱 Открыть платформу",
+                "text": "📱 Открыть платформу", 
                 "web_app": {"url": "https://ltl-18-33bg.vercel.app"}
             }
         ]]
     }
     
-    send_telegram_message_helper(chat_id, message, keyboard)
+    send_telegram_message(chat_id, message, keyboard)
 
-def send_telegram_help_message(chat_id):
+def send_help_message(chat_id):
     """Отправляет справочное сообщение"""
     message = """❓ *Помощь по BEATSSUDA Platform*
 
 *Команды:*
 /start \- Главное меню
-/app \- Открыть платформу
+/app \- Открыть платформу  
 /help \- Эта справка
 
 *Как пользоваться:*
@@ -382,9 +379,9 @@ def send_telegram_help_message(chat_id):
 *Техподдержка и модерация:* @BeatHavenX
 *Все проблемы писать ему\\!*"""
     
-    send_telegram_message_helper(chat_id, message)
+    send_telegram_message(chat_id, message)
 
-def send_telegram_message_helper(chat_id, text, reply_markup=None):
+def send_telegram_message(chat_id, text, reply_markup=None):
     """Отправляет сообщение через Telegram Bot API"""
     import requests
     
@@ -406,9 +403,6 @@ def send_telegram_message_helper(chat_id, text, reply_markup=None):
     except Exception as e:
         print(f"Error sending message: {e}")
         return False
-
-# Создаем экземпляр приложения для хостинга
-app = create_app()
 
 if __name__ == '__main__':
     # Создаем таблицы базы данных
